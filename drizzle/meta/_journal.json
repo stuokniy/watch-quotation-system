@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1764769351006,
+      "tag": "0000_dear_revanche",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1764769411457,
+      "tag": "0001_redundant_electro",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1764770645211,
+      "tag": "0002_omniscient_purifiers",
+      "breakpoints": true
+    }
+  ]
+}
