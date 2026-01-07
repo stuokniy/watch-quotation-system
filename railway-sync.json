@@ -5,7 +5,7 @@
     "dockerfile": "Dockerfile.sync"
   },
   "deploy": {
-    "startCommand": "node tools/whatsapp-sync-tool.mjs start",
+    "startCommand": "node tools/whatsapp-sync-service.mjs",
     "restartPolicyMaxRetries": 5,
     "restartPolicyWindowSeconds": 60
   }
