@@ -15,10 +15,10 @@ WORKDIR /app
 COPY package*.json ./
 COPY pnpm-lock.yaml* ./
 
-# Install dependencies (only production dependencies needed)
-RUN npm install --legacy-peer-deps --omit=dev --ignore-scripts
+# Install ALL dependencies (including those needed by whatsapp-web.js)
+RUN npm install --legacy-peer-deps --ignore-scripts
 
-# Copy only the sync tool and necessary files
+# Copy only the sync service
 COPY tools/whatsapp-sync-service.mjs ./tools/
 
 # Create logs directory

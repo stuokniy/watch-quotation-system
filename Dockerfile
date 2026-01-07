@@ -6,6 +6,7 @@ WORKDIR /build
 COPY package*.json ./
 COPY pnpm-lock.yaml* ./
 
+# Install all dependencies (including dev) for building
 RUN npm install --legacy-peer-deps --ignore-scripts
 
 COPY . .
@@ -21,19 +22,13 @@ ENV VITE_FRONTEND_FORGE_API_URL=https://api.manus.im
 ENV VITE_FRONTEND_FORGE_API_KEY=demo-key
 ENV NODE_ENV=production
 
-# Try to build, but don't fail if it doesn't work
-RUN npm run build 2>&1 || echo "Build completed with warnings"
+# Build the application
+RUN npm run build
 
 # Stage 2: Runtime stage
 FROM node:22-alpine
 
-# Install system dependencies
-RUN apk add --no-cache \
-    chromium \
-    ca-certificates \
-    dbus \
-    ttf-freefont \
-    font-noto-cjk
+WORKDIR /app
 
 WORKDIR /app
 
@@ -41,15 +36,12 @@ WORKDIR /app
 COPY package*.json ./
 COPY pnpm-lock.yaml* ./
 
-# Install production dependencies only
-RUN npm install --legacy-peer-deps --omit=dev --ignore-scripts
+# Install ALL dependencies (including dev dependencies needed for runtime)
+RUN npm install --legacy-peer-deps --ignore-scripts
 
 # Copy built files from builder
 COPY --from=builder /build/dist ./dist
 COPY --from=builder /build/drizzle ./drizzle
-COPY --from=builder /build/tools ./tools
-COPY --from=builder /build/shared ./shared
-COPY --from=builder /build/server ./server
 
 # Ensure dist/public exists
 RUN mkdir -p dist/public
