@@ -1,0 +1,36 @@
+# Dockerfile for WhatsApp Sync Tool
+FROM node:22-alpine
+
+# Install system dependencies for Chromium
+RUN apk add --no-cache \
+    chromium \
+    ca-certificates \
+    dbus \
+    ttf-freefont \
+    font-noto-cjk
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY pnpm-lock.yaml* ./
+
+# Install dependencies
+RUN npm install --legacy-peer-deps --omit=dev --ignore-scripts
+
+# Copy project files
+COPY tools ./tools
+COPY drizzle ./drizzle
+COPY shared ./shared
+COPY server ./server
+COPY config.whatsapp-sync.json* ./
+
+# Create logs directory
+RUN mkdir -p logs
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
+
+# Run the sync tool
+CMD ["node", "tools/whatsapp-sync-tool.mjs", "start"]

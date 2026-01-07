@@ -1,0 +1,12 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "dockerfile",
+    "dockerfile": "Dockerfile.sync"
+  },
+  "deploy": {
+    "startCommand": "node tools/whatsapp-sync-tool.mjs start",
+    "restartPolicyMaxRetries": 5,
+    "restartPolicyWindowSeconds": 60
+  }
+}
