@@ -15,15 +15,11 @@ WORKDIR /app
 COPY package*.json ./
 COPY pnpm-lock.yaml* ./
 
-# Install dependencies
+# Install dependencies (only production dependencies needed)
 RUN npm install --legacy-peer-deps --omit=dev --ignore-scripts
 
-# Copy project files
-COPY tools ./tools
-COPY drizzle ./drizzle
-COPY shared ./shared
-COPY server ./server
-COPY config.whatsapp-sync.json* ./
+# Copy only the sync tool and necessary files
+COPY tools/whatsapp-sync-service.mjs ./tools/
 
 # Create logs directory
 RUN mkdir -p logs
@@ -32,5 +28,9 @@ RUN mkdir -p logs
 ENV NODE_ENV=production
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
 
-# Run the sync tool
-CMD ["node", "tools/whatsapp-sync-tool.mjs", "start"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD node -e "console.log('healthy')" || exit 1
+
+# Run the standalone sync service
+CMD ["node", "tools/whatsapp-sync-service.mjs"]
